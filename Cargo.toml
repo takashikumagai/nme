@@ -1,0 +1,15 @@
+[workspace]
+resolver = "2"
+members = ["crates/nme-core"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+authors = ["Nyanko"]
+repository = "https://github.com/viridian/nme"
+
+# thiserror is pinned to the workspace so nme-core and (later) the nme bin
+# crate always agree on which version they're using.
+[workspace.dependencies]
+thiserror = "1"

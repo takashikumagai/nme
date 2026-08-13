@@ -1,0 +1,24 @@
+[package]
+name = "nme-core"
+description = "Format-agnostic metadata model and per-format backends for nme"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+thiserror.workspace = true
+lopdf = { version = "0.34" }
+
+# --- Transitive-dependency pins ---
+# This toolchain is rustc/cargo 1.75. Left unpinned, cargo resolves `time`
+# (pulled in transitively) to a version whose manifest requires the
+# edition2024 Cargo feature, which isn't stable until rustc 1.85. Pinned to
+# the newest `time` release still compatible with 1.75. Safe to delete once
+# the toolchain is upgraded.
+# time = "=0.3.36"
+# indexmap = "=2.2.6"
+# rangemap = "=1.5.1"
+# rayon = "=1.10.0"
+# rayon-core = "=1.12.1"
