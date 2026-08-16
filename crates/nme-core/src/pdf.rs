@@ -144,7 +144,7 @@ impl MetadataFile for PdfFile {
         Some(decode_pdf_string(bytes))
     }
 
-    /// ```
+    /// ```no_run
     /// use std::path::Path;
     /// use nme_core::FieldKey;
     ///
@@ -184,5 +184,79 @@ impl MetadataFile for PdfFile {
             })?;
         self.dirty = false;
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use lopdf::dictionary;
+
+    /// Builds a minimal-but-valid empty PDF (no pages) at a temp path and
+    /// returns that path. Building the fixture in-memory with `lopdf`
+    /// itself, rather than shipping a committed `.pdf` file, keeps the test
+    /// hermetic: nothing outside the test needs to exist on disk for
+    /// `cargo test` to pass, on any machine, forever.
+    fn minimal_pdf(dir: &tempfile::TempDir, name: &str) -> PathBuf {
+        let mut doc = Document::with_version("1.5");
+        let pages_id = doc.add_object(dictionary! {
+            "Type" => "Pages",
+            "Kids" => Vec::<Object>::new(),
+            "Count" => 0,
+        });
+        let catalog_id = doc.add_object(dictionary! {
+            "Type" => "Catalog",
+            "Pages" => pages_id,
+        });
+        doc.trailer.set("Root", catalog_id);
+
+        let path = dir.path().join(name);
+        doc.save(&path).expect("failed to write fixture PDF");
+        path
+    }
+
+    #[test]
+    fn set_then_save_then_reopen_round_trips_title() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let path = minimal_pdf(&dir, "roundtrip.pdf");
+
+        let mut doc = PdfFile::open(&path).expect("open");
+        assert_eq!(doc.get(FieldKey::Title), None);
+
+        doc.set(FieldKey::Title, Some("Hello".to_string()));
+        assert!(doc.is_dirty());
+        doc.save().expect("save");
+        assert!(!doc.is_dirty(), "save() should clear the dirty flag");
+
+        let reopened = PdfFile::open(&path).expect("reopen");
+        assert_eq!(reopened.get(FieldKey::Title), Some("Hello".to_string()));
+    }
+
+    #[test]
+    fn set_none_clears_a_previously_set_field() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let path = minimal_pdf(&dir, "clear.pdf");
+
+        let mut doc = PdfFile::open(&path).expect("open");
+        doc.set(FieldKey::Author, Some("Nyanko".to_string()));
+        doc.save().expect("save");
+
+        let mut doc = PdfFile::open(&path).expect("reopen");
+        assert_eq!(doc.get(FieldKey::Author), Some("Nyanko".to_string()));
+
+        doc.set(FieldKey::Author, None);
+        doc.save().expect("save after clear");
+
+        let doc = PdfFile::open(&path).expect("reopen after clear");
+        assert_eq!(doc.get(FieldKey::Author), None);
+    }
+
+    #[test]
+    fn fields_lists_all_pdf_info_keys_in_display_order() {
+        let dir = tempfile::tempdir().expect("tempdir");
+        let path = minimal_pdf(&dir, "fields.pdf");
+        let doc = PdfFile::open(&path).expect("open");
+
+        assert_eq!(doc.fields(), PDF_FIELDS);
     }
 }
