@@ -1,0 +1,18 @@
+[package]
+name = "nme"
+description = "Nyanko's Metadata Editor - GUI/CLI file metadata editor"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "nme"
+path = "src/main.rs"
+
+[dependencies]
+nme-core = { path = "../nme-core" }
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
