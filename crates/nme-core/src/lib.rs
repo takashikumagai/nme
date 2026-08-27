@@ -8,6 +8,7 @@
 
 mod error;
 pub mod format;
+pub mod mp3;
 pub mod pdf;
 
 pub use error::{NmeError, Result};
@@ -30,6 +31,14 @@ pub enum FieldKey {
     Producer,
     CreationDate,
     ModDate,
+    /// MP3-specific fields below. `Title`/`Author` above are reused (mapped
+    /// to ID3's TIT2/TPE1) since "title" and "artist" are the same concept
+    /// as PDF's Title/Author; the rest have no PDF equivalent.
+    Mp3Album,
+    Mp3AlbumArtist,
+    Mp3Track,
+    Mp3Year,
+    Mp3Genre,
 }
 
 impl FieldKey {
@@ -44,6 +53,11 @@ impl FieldKey {
             FieldKey::Producer => "Producer",
             FieldKey::CreationDate => "Creation Date",
             FieldKey::ModDate => "Modification Date",
+            FieldKey::Mp3Album => "Album",
+            FieldKey::Mp3AlbumArtist => "Album Artist",
+            FieldKey::Mp3Track => "Track",
+            FieldKey::Mp3Year => "Year",
+            FieldKey::Mp3Genre => "Genre",
         }
     }
 
@@ -60,6 +74,11 @@ impl FieldKey {
             FieldKey::Producer => "producer",
             FieldKey::CreationDate => "creation-date",
             FieldKey::ModDate => "mod-date",
+            FieldKey::Mp3Album => "album",
+            FieldKey::Mp3AlbumArtist => "album-artist",
+            FieldKey::Mp3Track => "track",
+            FieldKey::Mp3Year => "year",
+            FieldKey::Mp3Genre => "genre",
         }
     }
 
@@ -75,6 +94,11 @@ impl FieldKey {
             "producer" => FieldKey::Producer,
             "creation-date" => FieldKey::CreationDate,
             "mod-date" => FieldKey::ModDate,
+            "album" => FieldKey::Mp3Album,
+            "album-artist" => FieldKey::Mp3AlbumArtist,
+            "track" => FieldKey::Mp3Track,
+            "year" => FieldKey::Mp3Year,
+            "genre" => FieldKey::Mp3Genre,
             _ => return None,
         })
     }
@@ -93,6 +117,11 @@ impl FieldKey {
             FieldKey::Producer,
             FieldKey::CreationDate,
             FieldKey::ModDate,
+            FieldKey::Mp3Album,
+            FieldKey::Mp3AlbumArtist,
+            FieldKey::Mp3Track,
+            FieldKey::Mp3Year,
+            FieldKey::Mp3Genre,
         ]
     }
 }

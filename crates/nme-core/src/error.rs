@@ -25,6 +25,20 @@ pub enum NmeError {
         #[source]
         source: lopdf::Error,
     },
+
+    #[error("failed to parse MP3 {path}: {source}")]
+    Mp3Parse {
+        path: PathBuf,
+        #[source]
+        source: id3::Error,
+    },
+
+    #[error("failed to save MP3 {path}: {source}")]
+    Mp3Save {
+        path: PathBuf,
+        #[source]
+        source: id3::Error,
+    },
 }
 
 pub type Result<T> = std::result::Result<T, NmeError>;

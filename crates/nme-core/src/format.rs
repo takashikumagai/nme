@@ -6,6 +6,7 @@
 
 use std::path::Path;
 
+use crate::mp3::Mp3File;
 use crate::pdf::PdfFile;
 use crate::{MetadataFile, NmeError, Result};
 
@@ -18,9 +19,7 @@ pub fn open(path: &Path) -> Result<Box<dyn MetadataFile>> {
 
     match ext.as_str() {
         "pdf" => Ok(Box::new(PdfFile::open(path)?)),
-        "mp3" => Err(NmeError::UnsupportedFormat(
-            "MP3 (planned, not yet implemented)".to_string(),
-        )),
+        "mp3" => Ok(Box::new(Mp3File::open(path)?)),
         "jpg" | "jpeg" => Err(NmeError::UnsupportedFormat(
             "JPEG (planned, not yet implemented)".to_string(),
         )),
