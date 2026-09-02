@@ -7,6 +7,7 @@
 //! else in the CLI or GUI needs to change.
 
 mod error;
+pub mod flac;
 pub mod format;
 pub mod mp3;
 pub mod pdf;
@@ -31,9 +32,11 @@ pub enum FieldKey {
     Producer,
     CreationDate,
     ModDate,
-    /// MP3-specific fields below. `Title`/`Author` above are reused (mapped
-    /// to ID3's TIT2/TPE1) since "title" and "artist" are the same concept
-    /// as PDF's Title/Author; the rest have no PDF equivalent.
+    /// Audio fields shared by the MP3 and FLAC backends. Named `Mp3*` for
+    /// historical reasons (they were added with the MP3 backend); FLAC maps
+    /// them to the equivalent Vorbis comments. `Title`/`Author` above are
+    /// reused (ID3 TIT2/TPE1, Vorbis TITLE/ARTIST) since "title" and
+    /// "artist" are the same concept as PDF's Title/Author.
     Mp3Album,
     Mp3AlbumArtist,
     Mp3Track,

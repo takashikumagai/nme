@@ -44,8 +44,8 @@ fn info_dict_key(key: FieldKey) -> Option<&'static [u8]> {
         FieldKey::Producer => Some(b"Producer"),
         FieldKey::CreationDate => Some(b"CreationDate"),
         FieldKey::ModDate => Some(b"ModDate"),
-        // MP3-only fields: unsupported by this format, per the trait's
-        // "unknown key -> None" contract.
+        // Audio-only fields (MP3/FLAC): unsupported by this format, per
+        // the trait's "unknown key -> None" contract.
         FieldKey::Mp3Album
         | FieldKey::Mp3AlbumArtist
         | FieldKey::Mp3Track

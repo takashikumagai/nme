@@ -39,6 +39,20 @@ pub enum NmeError {
         #[source]
         source: id3::Error,
     },
+
+    #[error("failed to parse FLAC {path}: {source}")]
+    FlacParse {
+        path: PathBuf,
+        #[source]
+        source: metaflac::Error,
+    },
+
+    #[error("failed to save FLAC {path}: {source}")]
+    FlacSave {
+        path: PathBuf,
+        #[source]
+        source: metaflac::Error,
+    },
 }
 
 pub type Result<T> = std::result::Result<T, NmeError>;
