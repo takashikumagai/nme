@@ -3,3 +3,4 @@
 //! about how that command formats output and reports errors.
 
 pub mod info;
+pub mod set;

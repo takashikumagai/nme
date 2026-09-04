@@ -11,5 +11,6 @@ fn main() -> ExitCode {
 
     match cli.command {
         Command::Info(args) => commands::info::run(args),
+        Command::Set(args) => commands::set::run(args),
     }
 }

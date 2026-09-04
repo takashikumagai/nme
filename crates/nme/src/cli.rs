@@ -18,6 +18,10 @@ pub enum Command {
     /// Print a file's metadata to stdout.
     #[command(alias = "i")]
     Info(InfoArgs),
+
+    /// Set one metadata field on a file.
+    #[command(alias = "s")]
+    Set(SetArgs),
 }
 
 #[derive(Debug, Parser)]
@@ -29,4 +33,16 @@ pub struct InfoArgs {
     /// Print machine-readable JSON instead of human-readable text.
     #[arg(short = 'j', long = "json")]
     pub json: bool,
+}
+
+#[derive(Debug, Parser)]
+pub struct SetArgs {
+    #[arg(required = true)]
+    pub metadata_name: String,
+
+    #[arg(required = true)]
+    pub metadata_value: String,
+
+    #[arg(required = true)]
+    pub files: Vec<PathBuf>,
 }
